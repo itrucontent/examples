@@ -1,4 +1,4 @@
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ContentType
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -31,18 +31,19 @@ async def process_help_command(message: Message):
     )
 
 
+@dp.message(F.photo)
+async def send_photo(message: Message):
+    if message.caption is not None:
+        await message.reply(text=f'Что это за {message.caption}')
+    else:
+        await message.reply("Данный формат не поддерживается")
+
+
 # Этот хэндлер будет срабатывать на любые ваши текстовые сообщения,
 # кроме команд "/start" и "/help"
-
-@dp.message(F.content_type.in_({ContentType.PHOTO,ContentType.VOICE,ContentType.VIDEO}))
-async def send_text(message: Message):
-    await message.answer("Данный формат не поддерживается")
-
 @dp.message()
 async def send_echo(message: Message):
-    await message.reply(message.text)
-
-
+    await message.reply(text=message.text)
 
 
 if __name__ == '__main__':
